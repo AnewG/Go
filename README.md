@@ -96,3 +96,31 @@ func main() {
 还有一点要注意的是，如果 w() 发生 panic，那“许可证”可能就还不回去了，因此需要使用 defer 来保证。
 
 ```
+
+```
+
+关闭channel原则：
+
+不要从一个 receiver 侧关闭 channel （sender将不知道已关闭仍然发送数据）
+
+只有一个 sender 的情况，直接从 sender 端关闭
+
+多个 sender 有 2 种情况
+
+1.N 个 sender，一个 reciver 
+    -> 新建一个通知用的 channel，要停止从 sender 接收时由 reciver(该 channel 唯一发送者) 关闭该 channel，并自己结束流程
+    -> 每一个 sender 都有监听该 channel，一旦取到 ( 关闭状态下可取值，变为非阻塞立即返回 )，原先的发送 channel 停止发送并结束流程
+    -> 不手动关闭原先的发送 channel，等 gc 自己回收
+2.N 个 sender， M 个 receiver
+    -> 沿用一个 reciver 的方案，但是由于有多个 receiver，所以需要由中间人专门处理通知用的 channel
+    -> 中间人为带缓冲的 channel，sender 和 reciver 都能向中间人发送关闭通知
+    -> 中间人缓冲容量若为 Num(senders+receivers)，则 sender/reciver 发送关闭通知的代码可以去掉 select+default，因为不需要处理阻塞，容量够大不会阻塞
+    -> 同时 (多个) sender 和 reciver 都要监听通知用的 channel，一旦取到即结束自身流程
+
+中间人代码
+go func() {
+    stoppedBy = <-toStop // 一旦接收到关闭通知
+    close(stopCh)        // 关闭通知用的 channel
+}()
+
+```
