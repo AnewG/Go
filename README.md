@@ -160,7 +160,8 @@ buffer 一般用于未有 receiver 时，做数据缓存
 2.关闭一个 nil 的 channel
 3.重复关闭一个 channel
 
-读、写一个 nil channel 都会被阻塞。
+读、写一个 nil channel 都会被永久阻塞，就算后期初始化 channel 并写入值了也会阻塞住。
+nil channel: 声明但未初始化的 channel
 
 close 逻辑比较简单，对于一个 channel，recvq 和 sendq 中分别保存了阻塞的发送者和接收者。
 关闭 channel 后，对于等待接收者而言，会收到一个相应类型的零值。
