@@ -169,3 +169,16 @@ close 逻辑比较简单，对于一个 channel，recvq 和 sendq 中分别保�
 所以，在不了解 channel 还有没有接收者的情况下，不能贸然关闭 channel。
 
 ```
+
+```
+
+读写锁
+
+sync.RWMutex。
+
+读之前调用 RLock() 函数，读完之后调用 RUnlock() 函数解锁
+写之前调用 Lock() 函数，写完之后，调用 Unlock() 解锁。
+
+另外，sync.Map 是线程安全的 map
+
+```
