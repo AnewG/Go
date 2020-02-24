@@ -124,3 +124,19 @@ go func() {
 }()
 
 ```
+
+```
+
+向cahnnel发送数据
+
+goroutineA, goroutineB 同时作为 receiver 阻塞等待接收
+
+sender 发现 channel 的 recvqueue 里有 receiver 在等待着接收
+就会出队一个，把 recvq 里 first 指针的推举出来，并将其加入到其维护的可运行 goroutine 队列中。
+(按照 happened-before, receive 完成，send 才算 finished)
+
+两个 receiver 在 channel 等待，这时 channel 另一边来了一个 sender 准备向 channel 发送数据
+为了高效，用不着通过 channel 的 buffer 中转一次，直接从源地址把数据 copy 到目的地址就可以了
+buffer 一般用于未有 receiver 时，做数据缓存
+
+```
