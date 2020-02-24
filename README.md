@@ -129,6 +129,8 @@ go func() {
 
 向channel发送数据
 
+channel 里 recvq 存储那些尝试读取 channel 但被阻塞的 goroutine，sendq 则存储那些尝试写入 channel，但被阻塞的 goroutine
+
 goroutineA, goroutineB 同时作为 receiver 阻塞等待接收
 
 sender 发现 channel 的 recvqueue 里有 receiver 在等待着接收
