@@ -127,7 +127,7 @@ go func() {
 
 ```
 
-向cahnnel发送数据
+向channel发送数据
 
 goroutineA, goroutineB 同时作为 receiver 阻塞等待接收
 
@@ -138,5 +138,13 @@ sender 发现 channel 的 recvqueue 里有 receiver 在等待着接收
 两个 receiver 在 channel 等待，这时 channel 另一边来了一个 sender 准备向 channel 发送数据
 为了高效，用不着通过 channel 的 buffer 中转一次，直接从源地址把数据 copy 到目的地址就可以了
 buffer 一般用于未有 receiver 时，做数据缓存
+
+```
+
+```
+
+从channel接收数据
+
+接收操作有两种写法，一种带 "ok"，反应 channel 是否关闭；一种不带 "ok"，这种写法，当接收到相应类型的零值时无法知道是真实的发送者发送过来的值，还是 channel 被关闭后，返回给接收者的默认类型的零值。
 
 ```
