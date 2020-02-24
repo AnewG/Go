@@ -162,4 +162,9 @@ buffer 一般用于未有 receiver 时，做数据缓存
 
 读、写一个 nil channel 都会被阻塞。
 
+close 逻辑比较简单，对于一个 channel，recvq 和 sendq 中分别保存了阻塞的发送者和接收者。
+关闭 channel 后，对于等待接收者而言，会收到一个相应类型的零值。
+对于等待发送者，会直接 panic。
+所以，在不了解 channel 还有没有接收者的情况下，不能贸然关闭 channel。
+
 ```
