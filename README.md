@@ -354,3 +354,21 @@ context 会在函数传递间传递。
 而这也是 context.Value 最受争议的地方。很多人建议尽量不要通过 context 传值。
 
 ```
+
+```
+
+unsafe包
+
+任何类型的指针和 unsafe.Pointer 可以相互转换。
+uintptr 类型和 unsafe.Pointer 可以相互转换。
+
+uintptr(用于修改) <--> unsafe.Pointer(用于暂存) <--> *T
+
+pointer 不能直接进行数学运算，但可以把它转换成 uintptr，对 uintptr 类型进行数学运算，再转换成 pointer 类型。
+
+uintptr 并没有指针的语义，uintptr 所指向的对象会被 gc 无情地回收。
+而 unsafe.Pointer 有指针语义，可以保护它所指向的对象在“有用”的时候不会被垃圾回收
+
+可以绕过一些限制对内存直接进行读写
+
+```
