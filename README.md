@@ -239,7 +239,7 @@ qcrao.growUp()               qcrao为调用者
 编译器自动检测类型是否实现接口
 
 // 检查 *myWriter 类型是否实现了 io.Writer 接口
-var _ io.Writer = (*myWriter)(nil)
+var _ io.Writer = (*myWriter)(nil)  // 类型为 *myWriter，数据为 nil
 
 // 检查 myWriter 类型是否实现了 io.Writer 接口
 var _ io.Writer = myWriter{}
