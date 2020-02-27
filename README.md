@@ -326,3 +326,31 @@ b 的动态类型和 c 的动态类型一致，都是 *int
 最后，c 的动态值为 5。
 
 ```
+
+```
+
+Go 1.7 标准库引入 context
+
+准确说它是 goroutine 的上下文
+
+context 主要用来在 goroutine 之间传递上下文信息，包括：取消信号、超时时间、截止时间、k-v 等
+
+context 几乎成为了并发控制和超时控制的标准做法. 最重要的是它是并发安全的
+
+context 用来解决 goroutine 之间退出通知、元数据传递的功能
+
+context 会在函数传递间传递。
+只需要在适当的时间调用 cancel 函数向 goroutines 发出取消信号，ctx.Done() 判断取消
+调用 Value 函数取出 context 中的值。
+
+使用建议：
+1.不要将 Context 塞到结构体里。直接将 Context 类型作为函数的第一参数，而且一般都命名为 ctx。
+2.不要向函数传入一个 nil 的 context，如果你实在不知道传什么，标准库给你准备好了一个 context：todo。
+3.不要把本应该作为函数参数的类型塞到 context 中，context 存储的应该是一些共同的数据。例如：登陆的 session、cookie 等。
+4.同一个 context 可能会被传递到多个 goroutine，别担心，context 是并发安全的。
+
+在一个处理过程中，有若干子函数、子协程。各种不同的地方会向 context 里塞入各种不同的 k-v 对，最后在某个地方使用。
+根本就不知道什么时候什么地方传了什么值？这些值会不会被“覆盖”
+而这也是 context.Value 最受争议的地方。很多人建议尽量不要通过 context 传值。
+
+```
