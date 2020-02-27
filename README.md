@@ -233,3 +233,15 @@ qcrao.growUp()               qcrao为调用者
 如果类型具备非原始的本质，不能被安全地复制，这种类型总是应该被共享，那就定义指针接收者的方法。
 
 ```
+
+```
+
+编译器自动检测类型是否实现接口
+
+// 检查 *myWriter 类型是否实现了 io.Writer 接口
+var _ io.Writer = (*myWriter)(nil)
+
+// 检查 myWriter 类型是否实现了 io.Writer 接口
+var _ io.Writer = myWriter{}
+
+```
