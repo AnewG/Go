@@ -276,3 +276,53 @@ switch x := x.(type)
     case Type1:
 
 ```
+
+```
+
+接口类型和 nil 作比较
+
+接口值的零值是指动态类型和动态值都为 nil。
+当仅且当这两部分的值都为 nil 的情况下，这个接口值就才会被认为 接口值 == nil。
+
+----------------
+
+如何打印出接口的动态类型和值
+
+package main
+
+import (
+    "unsafe"
+    "fmt"
+)
+
+type iface struct {
+    itab, data uintptr
+}
+
+func main() {
+    var a interface{} = nil
+
+    var b interface{} = (*int)(nil)
+
+    x := 5
+    var c interface{} = (*int)(&x)
+
+    ia := *(*iface)(unsafe.Pointer(&a))
+    ib := *(*iface)(unsafe.Pointer(&b))
+    ic := *(*iface)(unsafe.Pointer(&c))
+
+    fmt.Println(ia, ib, ic)
+
+    fmt.Println(*(*int)(unsafe.Pointer(ic.data)))
+}
+
+运行结果如下
+
+{0 0} {17426912 0} {17426912 842350714568}
+5
+
+a 的动态类型和动态值的地址均为 0，也就是 nil
+b 的动态类型和 c 的动态类型一致，都是 *int
+最后，c 的动态值为 5。
+
+```
