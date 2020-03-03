@@ -390,13 +390,13 @@ Goroutines 和 threads 是独立的，但是 goroutines 要依赖 threads 才能
 
 有三个基础的结构体来实现 goroutines 的调度。g，m，p。
 g 代表一个 goroutine
-m 表示内核线程，包含正在运行的 goroutine 等字段。
+m 表示内核线程，包含正在运行的 goroutine 等字段，是真正的执行者。
 p 代表一个虚拟的 Processor，它维护一个处于 Runnable 状态的 g 队列，m 需要获得 p 才能运行 g。
 当然还有一个核心的结构体：sched，它总览全局。
 
 Runtime 起始时会启动一些 G：垃圾回收的 G，执行调度的 G，运行用户代码的 G
 并且会创建一个 M 用来开始 G 的运行。随着时间的推移，更多的 G 会被创建出来，更多的 M 也会被创建出来。
-当然，在 Go 的早期版本，并没有 p 这个结构体，m 必须从一个全局的队列里获取要运行的 g
+当然，在 Go 的早期版本，并没有 p 这个结构体，m 必须从一个全局的队列(唯一p)里获取要运行的 g
 因此需要获取一个全局的锁，当并发量大的时候，锁就成了瓶颈。
 后来加上了 p 结构体。每个 p 自己维护一个处于 Runnable 状态的 g 的队列，解决了原来的全局锁问题。
 
@@ -406,12 +406,13 @@ Go 程序启动后，会给每个逻辑核心分配一个 P（Logical Processor�
 在初始化时，Go 程序会有一个 G（initial Goroutine），执行指令的单位。
 G 会在 M 上得到执行，内核线程是在 CPU 核心上调度，而 G 则是在 M 上进行调度。
 
-G、P、M 都说完了，还有两个比较重要的组件没有提到： 全局可运行队列（GRQ）和本地可运行队列（LRQ）。 
-LRQ 存储本地（也就是具体的 P）的可运行 goroutine，GRQ 存储全局的可运行 goroutine，这些 goroutine 还没有分配到具体的 P。
-
-----------------
+当 M 没有工作可做时，在休眠前，会“自旋”找工作：检查全局队列，查看 network poller，试图执行 gc 任务，或者“偷”工作。(也可以说是P偷的)
+一个 M 只有绑定 P 才能执行 goroutine，当 M 被阻塞时，整个 P 会被传递给其他 M ，或者说整个 P 被接管
 
 在同一时刻，一个线程上只能跑一个 goroutine。当 goroutine 发生阻塞（例如上篇文章提到的向一个 channel 发送数据，被阻塞）时，runtime 会把当前 goroutine 调度走，让其他 goroutine 来执行
+
+G、P、M 都说完了，还有两个比较重要的组件没有提到： 全局可运行队列（GRQ）和本地可运行队列（LRQ）。 
+LRQ 存储本地（也就是具体的 P）的可运行 goroutine，GRQ 存储全局的可运行 goroutine，这些 goroutine 还没有分配到具体的 P。
 
 ----------------
 
