@@ -413,4 +413,9 @@ LRQ 存储本地（也就是具体的 P）的可运行 goroutine，GRQ 存储全
 
 在同一时刻，一个线程上只能跑一个 goroutine。当 goroutine 发生阻塞（例如上篇文章提到的向一个 channel 发送数据，被阻塞）时，runtime 会把当前 goroutine 调度走，让其他 goroutine 来执行
 
+----------------
+
+main goroutine 退出后直接调用 exit(0) 使得整个进程退出
+而普通 goroutine 退出后，则进行了一系列的调用，最终又切到 g0 栈，执行 schedule 函数。
+
 ```
