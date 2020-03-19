@@ -2,6 +2,12 @@
 
 ```
 
+A method is a function with an implicit first argument, called a receiver.
+
+```
+
+```
+
 make 与 new 的区别：
 
 make 的作用是初始化内置的数据结构，填充适当的值。可返回值或指针
