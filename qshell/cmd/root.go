@@ -13,7 +13,7 @@ import (
 	"github.com/qiniu/api.v7/storage"
 	"github.com/qiniu/qshell/iqshell"
 	"github.com/spf13/cobra" // 命令行生成工具
-	"github.com/spf13/viper" // 配置文件读取
+	"github.com/spf13/viper" // JSON、TOML、YAML、HCL、envfile，或者命令行参数等 配置读取
 )
 
 var (
@@ -66,14 +66,15 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
-	// HERE1
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig) // 读取并解析配置文件（用 viper 读取）
 
 	RootCmd.PersistentFlags().BoolVarP(&DebugFlag, "debug", "d", false, "debug mode")
 	RootCmd.PersistentFlags().BoolVarP(&VersionFlag, "version", "v", false, "show version")
 	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "C", "", "config file (default is $HOME/.qshell.json)")
 	RootCmd.PersistentFlags().BoolVarP(&local, "local", "L", false, "use current directory as config file path")
 
+	// 通过 viper 来绑定 flags, 读取绑定的 key 值对应命令行中的内容
+	// viper.GetInt(config) == RootCmd config value from command line
 	viper.BindPFlag("config", RootCmd.PersistentFlags().Lookup("config"))
 	viper.BindPFlag("local", RootCmd.PersistentFlags().Lookup("local"))
 }

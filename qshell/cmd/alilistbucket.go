@@ -9,7 +9,7 @@ import (
 var aliCmd = &cobra.Command{
 	Use:   "alilistbucket <DataCenter> <Bucket> <AccessKeyId> <AccesskeySecret> [Prefix] <ListBucketResultFile>",
 	Short: "List all the file in the bucket of aliyun oss by prefix",
-	Args:  cobra.RangeArgs(5, 6),
+	Args:  cobra.RangeArgs(5, 6), // RangeArgs(min, max) - the command will report an error if the number of args is not between the minimum and maximum number of expected args.
 	Run:   AliListBucket,
 }
 

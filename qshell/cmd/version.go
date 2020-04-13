@@ -17,7 +17,7 @@ var versionCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(versionCmd)
+	RootCmd.AddCommand(versionCmd) // 子命令
 }
 
 // 生成客户端代理名称

@@ -79,6 +79,7 @@ func IpQuery(cmd *cobra.Command, params []string) {
 
 			fmt.Println(fmt.Sprintf("%s\t%s", ip, ipInfo.String()))
 		}()
+		// 一定的时间间隔
 		<-time.After(time.Millisecond * 500)
 	}
 }

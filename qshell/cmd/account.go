@@ -19,7 +19,7 @@ func init() {
 var cmdAccount = &cobra.Command{
 	Use:   "account [<AccessKey> <SecretKey> <Name>]",
 	Short: "Get/Set AccessKey and SecretKey",
-	Args: func(cmd *cobra.Command, args []string) error {
+	Args: func(cmd *cobra.Command, args []string) error { // 验证参数
 		if len(args) != 0 && len(args) != 3 {
 			return fmt.Errorf("command account receives zero or three args, received %d\n", len(args))
 		}

@@ -28,6 +28,7 @@ var (
 	callbackHost string
 )
 
+// HERE1
 var formPutCmd = &cobra.Command{
 	Use:   "fput <Bucket> <Key> <LocalFile>",
 	Short: "Form upload a local file",
