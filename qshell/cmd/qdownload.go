@@ -36,7 +36,6 @@ func init() {
 // 根据文件列表下载文件功能在文档中还没有公开，遇到有这个需求的客户比较少
 func QiniuDownload(cmd *cobra.Command, params []string) {
 
-	// HERE1
 	var downloadConfig iqshell.DownloadConfig
 
 	configFile := params[0]

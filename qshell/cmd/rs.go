@@ -207,6 +207,7 @@ func DirCache(cmd *cobra.Command, params []string) {
 func ListBucket2(cmd *cobra.Command, params []string) {
 	bucket := params[0]
 
+	// HERE1
 	var dateParser = func(datestr string) (time.Time, error) {
 		var dttm [6]int
 
