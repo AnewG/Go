@@ -231,6 +231,7 @@ func (fc *fetchConfig) initUpHost(bucket string) {
 
 // 批量抓取网络资源到七牛存储空间
 func BatchFetch(cmd *cobra.Command, params []string) {
+
 	if worker <= 0 || worker > 1000 {
 		fmt.Fprintf(os.Stderr, "threads count: %d is too large, must be (0, 1000]", worker)
 		os.Exit(1)
@@ -317,6 +318,8 @@ func fetchChannel(c chan *iqshell.FetchItem, donec chan struct{}, fconfig *fetch
 
 	fileExporter := fconfig.fileExporter
 	bm := fconfig.bm
+
+	// HERE1
 
 	limitc := make(chan struct{}, fconfig.threadCount)
 	wg := sync.WaitGroup{}
