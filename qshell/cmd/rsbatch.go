@@ -319,13 +319,12 @@ func fetchChannel(c chan *iqshell.FetchItem, donec chan struct{}, fconfig *fetch
 	fileExporter := fconfig.fileExporter
 	bm := fconfig.bm
 
-	// HERE1
-
-	limitc := make(chan struct{}, fconfig.threadCount)
-	wg := sync.WaitGroup{}
+	// 为什么 channel 跟 wg 一起用？（目的不同）
+	limitc := make(chan struct{}, fconfig.threadCount) // 用来控制最大并发数
+	wg := sync.WaitGroup{} // 用来检测全部完成
 
 	for item := range c {
-		limitc <- struct{}{}
+		limitc <- struct{}{} // 空 struct 不占内存，针对 空struct 类数据内存申请部分，返回地址都是一个固定的地址。
 		wg.Add(1)
 
 		go func(item *iqshell.FetchItem) {
@@ -454,6 +453,8 @@ func BatchDelete(cmd *cobra.Command, params []string) {
 	}
 
 	bm := iqshell.GetBucketManager()
+
+	// HERE1
 
 	var batchTasks chan func()
 	var initBatchOnce sync.Once
