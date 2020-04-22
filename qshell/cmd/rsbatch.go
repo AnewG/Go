@@ -454,10 +454,8 @@ func BatchDelete(cmd *cobra.Command, params []string) {
 
 	bm := iqshell.GetBucketManager()
 
-	// HERE1
-
 	var batchTasks chan func()
-	var initBatchOnce sync.Once
+	var initBatchOnce sync.Once // 在代码运行中需要的时候执行，且只执行一次。（对于每个定义的 sync.Once 变量来说）
 
 	batchWaitGroup := sync.WaitGroup{}
 	initBatchOnce.Do(func() {
@@ -466,6 +464,15 @@ func BatchDelete(cmd *cobra.Command, params []string) {
 			go doBatchOperation(batchTasks)
 		}
 	})
+
+	/*
+	func doBatchOperation(tasks chan func()) {
+		for {
+			task := <-tasks
+			task()
+		}
+	}
+	 */
 
 	var fp io.ReadCloser
 	var err error
