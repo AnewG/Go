@@ -22,7 +22,6 @@ type Account struct {
 
 // 获取qbox.Mac
 func (acc *Account) Mac() (mac *qbox.Mac) {
-	// HERE1
 	mac = qbox.NewMac(acc.AccessKey, acc.SecretKey)
 	return
 }
