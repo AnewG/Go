@@ -16,7 +16,6 @@ import (
 )
 
 func (m *BucketManager) M3u8FileList(bucket string, m3u8Key string) (slicesToDelete []EntryPath, err error) {
-	// HERE1
 	dnLink, err := m.DownloadLink(bucket, m3u8Key)
 	if err != nil {
 		return

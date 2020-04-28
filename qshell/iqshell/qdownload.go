@@ -116,7 +116,21 @@ func (d *DownloadConfig) generateMiddileFile(bm *BucketManager, jobListFileName 
 	}
 	defer jobListFh.Close()
 
-	scanner := bufio.NewScanner(kFile)
+	scanner := bufio.NewScanner(kFile) // 读写缓冲
+
+	/*
+	首先讨论读缓存跟读缓冲。读缓存跟读缓冲的最大区别在于，读缓存的目标数据是始终有效的，如果不从缓存中读取，也可以直接读取实际数据，只不过实际数据读取会慢一些，当这个数据在缓存中，读取速度将会变快。
+	当一个缓存中的数据被多次读取，实际上就减少了该数据从慢速设备中读取的量，这就存在某种算法去选择「什么数据需要保存在cache中」，因为尽可能多的让cache命中能提高性能。
+	先进入cache的数据不一定先被读取，甚至说进入cache的数据有可能永远不被读取就被清除了，因此read cache呈现出非常明显的随机访问特性。
+
+	而读缓冲buffer的数据则不是始终有效，而是实时生成的数据流，每当buffer满或者主动flush buffer的时候触发一次读取，对于小数据，这样可以减少读取次数，对于大数据，这可以控制单次读取的数据量。
+	换句话说，无论数据量大还是小，单次读取数据量都按照buffer尺寸进行归一化了。通常来说，先喂给buffer的数据一定会先被读取，所有buffer的数据几乎一定会被读取，这是很明显的顺序访问特性。
+
+	在read（读取）的场合，cache通常被用于减少重复读取数据时的开销，而buffer则用于规整化每次读取数据的尺寸，在读取场合两者用途差别很大。
+
+	在write（写入）的场合，两者功能依然没变，但由于cache跟buffer的功能在写入场合可以融合使用，所以两者可以被混淆，写入缓冲跟写入缓存往往会同时担当规整化写入尺寸以及减少写入次数的功能，所以两者有时会被混淆，但这只是个名称问题，没有原则性关系。
+	 */
+
 	entries := make([]EntryPath, 0, d.batchNum)
 
 	writeEntry := func() {
@@ -166,6 +180,10 @@ func doDownload(tasks chan func()) {
 
 // 【qdownload] 批量下载文件， 可以下载以前缀的文件，也可以下载一个文件列表
 func QiniuDownload(threadCount int, downConfig *DownloadConfig) {
+	// HERE1
+
+	// 了解完整下载流程
+
 	QShellRootPath := RootPath()
 	if QShellRootPath == "" {
 		fmt.Fprintf(os.Stderr, "empty root path\n")
