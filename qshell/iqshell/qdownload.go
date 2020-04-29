@@ -180,9 +180,6 @@ func doDownload(tasks chan func()) {
 
 // 【qdownload] 批量下载文件， 可以下载以前缀的文件，也可以下载一个文件列表
 func QiniuDownload(threadCount int, downConfig *DownloadConfig) {
-	// HERE1
-
-	// 了解完整下载流程
 
 	QShellRootPath := RootPath()
 	if QShellRootPath == "" {
@@ -272,6 +269,7 @@ func QiniuDownload(threadCount int, downConfig *DownloadConfig) {
 	ldbWOpt := opt.WriteOptions{
 		Sync: true,
 	}
+
 	if downConfig.KeyFile != "" {
 		fmt.Println("Batch stat file info, this may take a long time, please wait...")
 		downConfig.generateMiddileFile(bm, jobListFileName)
@@ -471,6 +469,8 @@ func QiniuDownload(threadCount int, downConfig *DownloadConfig) {
 			downWaitGroup.Add(1)
 			downloadTasks <- func() {
 				defer downWaitGroup.Done()
+
+				// atomic是最轻量级的锁，原子操作
 
 				downErr := downloadFile(downConfig, fileKey, fileUrl, downloadDomain, fileSize, fromBytes)
 				if downErr != nil {

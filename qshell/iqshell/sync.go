@@ -209,6 +209,7 @@ func (m *BucketManager) Sync(srcResUrl, bucket, key, upHost string) (putRet Sput
 		err = fErr
 		return
 	}
+
 	syncProgress := NewProgressRecorder(progressFile)
 	syncProgress.RecoverFromUrl(srcResUrl, bucket, key)
 	syncProgress.CheckValid(totalSize, 0)
